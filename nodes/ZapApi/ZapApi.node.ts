@@ -1,18 +1,19 @@
-import type { INodeType, INodeTypeDescription } from "n8n-workflow";
+import { NodeConnectionTypes, type INodeType, type INodeTypeDescription } from "n8n-workflow";
 import { getInstances } from "../shared/loadOptions";
 
 export class ZapApi implements INodeType {
   description: INodeTypeDescription = {
     displayName: "ZAP-API",
     name: "zapApi",
-    icon: "file:zapapi.svg",
+    icon: { light: "file:zapapi.svg", dark: "file:zapapi.svg" },
     group: ["output"],
     version: 1,
     subtitle: '={{"Enviar para " + $parameter["phone"]}}',
     description: "Enviar mensagens WhatsApp via ZAP-API",
     defaults: { name: "ZAP-API" },
-    inputs: ["main"],
-    outputs: ["main"],
+    inputs: [NodeConnectionTypes.Main],
+    outputs: [NodeConnectionTypes.Main],
+    usableAsTool: true,
     credentials: [{ name: "zapApiApi", required: true }],
     requestDefaults: {
       baseURL: "={{$credentials.baseUrl}}",
@@ -48,7 +49,7 @@ export class ZapApi implements INodeType {
         default: "",
         required: true,
         description:
-          "Escolha a instância. Choose from the list, or specify an ID using an expression."
+          "Escolha a instância. Choose from the list, or specify an ID using an <a href=\"https://docs.n8n.io/code/expressions/\">expression</a>."
       },
       {
         displayName: "Phone",
@@ -64,11 +65,11 @@ export class ZapApi implements INodeType {
         name: "type",
         type: "options",
         options: [
-          { name: "Text", value: "text" },
-          { name: "Image", value: "image" },
           { name: "Audio", value: "audio" },
-          { name: "Video", value: "video" },
-          { name: "Document", value: "document" }
+          { name: "Document", value: "document" },
+          { name: "Image", value: "image" },
+          { name: "Text", value: "text" },
+          { name: "Video", value: "video" }
         ],
         default: "text",
         routing: { send: { type: "body", property: "type" } }

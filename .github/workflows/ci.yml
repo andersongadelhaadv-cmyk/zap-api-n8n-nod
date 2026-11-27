@@ -48,17 +48,22 @@ jobs:
           npm publish --access public --provenance
 
   scan:
-    # Verificador oficial do n8n (o mesmo da revisão automatizada do Creator
-    # Portal). Roda sobre o pacote PUBLICADO no npm — job separado para o
-    # relatório ficar visível sem misturar com o build.
-    name: n8n scan-community-package (pacote publicado)
+    # Verificador oficial do n8n — o mesmo da revisão automatizada do Creator
+    # Portal. Ele analisa o pacote PUBLICADO, então roda só em push na main,
+    # DEPOIS do job que publica, e na versão exata do package.json.
+    name: n8n scan-community-package (versão publicada)
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: read
     steps:
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
           node-version: 24
       - name: Scan
-        run: npx -y @n8n/scan-community-package@beta n8n-nodes-zap-api
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          npx -y @n8n/scan-community-package@beta "n8n-nodes-zap-api@$VERSION"
