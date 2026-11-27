@@ -30,7 +30,8 @@ export class ZapApiApi implements ICredentialType {
       typeOptions: { password: true },
       default: "",
       required: true,
-      description: "Token da instância (tk_...). Painel ZAP-API → Instâncias.",
+      description:
+        "Token da instância (tk_...), em Painel ZAP-API → Instâncias. Cada token vale para UMA instância: é ela que aparece na lista do nó. Para usar outro número, crie outra credencial com o token dele.",
     },
   ];
 
