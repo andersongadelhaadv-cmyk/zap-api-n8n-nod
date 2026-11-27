@@ -46,3 +46,19 @@ jobs:
           npm install -g npm@11.6.2
           echo "Publicando $NAME@$VERSION com provenance..."
           npm publish --access public --provenance
+
+  scan:
+    # Verificador oficial do n8n (o mesmo da revisão automatizada do Creator
+    # Portal). Roda sobre o pacote PUBLICADO no npm — job separado para o
+    # relatório ficar visível sem misturar com o build.
+    name: n8n scan-community-package (pacote publicado)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Scan
+        run: npx -y @n8n/scan-community-package@beta n8n-nodes-zap-api
