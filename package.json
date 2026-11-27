@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-zap-api",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "n8n community node para a ZAP-API (WhatsApp): enviar mensagens e reagir a eventos.",
   "keywords": [
     "n8n-community-node-package",
@@ -17,7 +17,9 @@
     "url": "https://github.com/andersongadelhaadv-cmyk/zap-api-n8n-nod/issues"
   },
   "author": {
-    "name": "ZAP-API"
+    "name": "ZAP-API",
+    "email": "andersongadelha.adv@gmail.com",
+    "url": "https://zap-api.tech"
   },
   "scripts": {
     "build": "tsc && gulp build:icons",
