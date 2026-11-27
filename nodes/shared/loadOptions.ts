@@ -26,10 +26,18 @@ export async function getInstances(
       : ((res as { instances?: unknown[]; data?: unknown[] })?.instances ??
         (res as { data?: unknown[] })?.data ??
         [])
-  ) as Array<{ instanceId?: string; id?: string; displayName?: string }>;
+  ) as Array<{ instanceId?: string; id?: string; displayName?: string; status?: string }>;
 
   return list.map((i) => ({
-    name: (i.displayName || i.instanceId || i.id) as string,
+    name: rotuloDaInstancia(i),
     value: (i.instanceId || i.id) as string,
   }));
+}
+
+/** Nome na lista; instância suspensa ou cancelada avisa no próprio nome (o envio por ela falha). */
+export function rotuloDaInstancia(i: { instanceId?: string; id?: string; displayName?: string; status?: string }): string {
+  const nome = (i.displayName || i.instanceId || i.id || "") as string;
+  if (i.status === "suspended") return `${nome} (suspensa)`;
+  if (i.status === "cancelled") return `${nome} (cancelada)`;
+  return nome;
 }

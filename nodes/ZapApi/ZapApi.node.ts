@@ -58,6 +58,8 @@ export class ZapApi implements INodeType {
         default: "",
         required: true,
         placeholder: "5511999999999",
+        description:
+          "Número de destino com DDI e DDD, só dígitos (ex.: 5511999999999). Para grupo, use o ID terminado em @g.us",
         routing: { send: { type: "body", property: "phone" } }
       },
       {
@@ -80,6 +82,8 @@ export class ZapApi implements INodeType {
         type: "string",
         typeOptions: { rows: 3 },
         default: "",
+        required: true,
+        description: "Texto da mensagem",
         displayOptions: { show: { type: ["text"] } },
         // O campo do wire chama-se `body` — a API rejeita `text` com 400
         // ("body é obrigatório para type=text"). O `name` interno segue "text"
@@ -91,7 +95,9 @@ export class ZapApi implements INodeType {
         name: "mediaUrl",
         type: "string",
         default: "",
+        required: true,
         placeholder: "https://exemplo.com/arquivo.pdf",
+        description: "Link público (https) do arquivo. Precisa abrir sem login",
         displayOptions: { show: { type: ["image", "audio", "video", "document"] } },
         routing: { send: { type: "body", property: "mediaUrl" } }
       },
