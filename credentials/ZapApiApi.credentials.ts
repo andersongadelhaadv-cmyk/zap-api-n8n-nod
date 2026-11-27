@@ -2,6 +2,7 @@ import type {
   IAuthenticateGeneric,
   ICredentialTestRequest,
   ICredentialType,
+  Icon,
   INodeProperties,
 } from "n8n-workflow";
 
@@ -9,6 +10,8 @@ export class ZapApiApi implements ICredentialType {
   name = "zapApiApi";
 
   displayName = "ZAP-API API";
+
+  icon: Icon = { light: "file:../nodes/ZapApi/zapapi.svg", dark: "file:../nodes/ZapApi/zapapi.svg" };
 
   documentationUrl = "https://zap-api.tech/dashboard/docs";
 

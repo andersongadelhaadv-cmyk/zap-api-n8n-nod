@@ -1,10 +1,14 @@
-import type {
-  IDataObject,
-  IHookFunctions,
-  INodeType,
-  INodeTypeDescription,
-  IWebhookFunctions,
-  IWebhookResponseData,
+import {
+  NodeApiError,
+  NodeConnectionTypes,
+  NodeOperationError,
+  type IDataObject,
+  type IHookFunctions,
+  type INodeType,
+  type INodeTypeDescription,
+  type IWebhookFunctions,
+  type IWebhookResponseData,
+  type JsonObject,
 } from "n8n-workflow";
 import { getInstances } from "../shared/loadOptions";
 import { verifySignature } from "../shared/verifySignature";
@@ -37,13 +41,14 @@ export class ZapApiTrigger implements INodeType {
   description: INodeTypeDescription = {
     displayName: "ZAP-API Trigger",
     name: "zapApiTrigger",
-    icon: "file:zapapi.svg",
+    icon: { light: "file:zapapi.svg", dark: "file:zapapi.svg" },
     group: ["trigger"],
     version: 1,
+    subtitle: '={{"Eventos: " + $parameter["events"].join(", ")}}',
     description: "Inicia o workflow em eventos do WhatsApp (ZAP-API)",
     defaults: { name: "ZAP-API Trigger" },
     inputs: [],
-    outputs: ["main"],
+    outputs: [NodeConnectionTypes.Main],
     credentials: [{ name: "zapApiApi", required: true }],
     webhooks: [
       {
@@ -69,7 +74,7 @@ export class ZapApiTrigger implements INodeType {
         default: "",
         required: true,
         description:
-          "Escolha a instância. Choose from the list, or specify an ID using an expression.",
+          "Escolha a instância. Choose from the list, or specify an ID using an <a href=\"https://docs.n8n.io/code/expressions/\">expression</a>.",
       },
       {
         displayName: "Events",
@@ -128,13 +133,14 @@ export class ZapApiTrigger implements INodeType {
             json: true,
           })) as { webhookSecret?: string };
         } catch (error) {
-          throw new Error(
-            `Falha ao registrar o webhook na instância ${instanceId} (verifique o token, o ID da instância e se a URL do n8n é pública HTTPS): ${(error as Error).message}`,
-          );
+          throw new NodeApiError(this.getNode(), error as JsonObject, {
+            message: `Falha ao registrar o webhook na instância ${instanceId} (verifique o token, o ID da instância e se a URL do n8n é pública HTTPS)`,
+          });
         }
 
         if (!response?.webhookSecret) {
-          throw new Error(
+          throw new NodeOperationError(
+            this.getNode(),
             "A ZAP-API não retornou o webhookSecret ao registrar — não é possível verificar a assinatura. Verifique a versão da API.",
           );
         }
@@ -152,8 +158,12 @@ export class ZapApiTrigger implements INodeType {
             url: `/instances/${instanceId}/webhook`,
             json: true,
           });
-        } catch {
-          // best-effort: if the instance is gone, ignore the error.
+        } catch (error) {
+          // Best-effort: a instância pode já não existir. Registra e segue —
+          // desativar o workflow não pode falhar por causa disso.
+          this.logger.warn(
+            `ZAP-API: não foi possível limpar o webhook da instância ${instanceId}: ${(error as Error).message}`,
+          );
         }
         const staticData = this.getWorkflowStaticData("node");
         delete staticData.secret;
