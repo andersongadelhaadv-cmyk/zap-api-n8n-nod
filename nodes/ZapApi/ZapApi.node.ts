@@ -83,7 +83,7 @@ export class ZapApi implements INodeType {
         typeOptions: { rows: 3 },
         default: "",
         required: true,
-        description: "Texto da mensagem.",
+        description: "Texto da mensagem",
         displayOptions: { show: { type: ["text"] } },
         // O campo do wire chama-se `body` — a API rejeita `text` com 400
         // ("body é obrigatório para type=text"). O `name` interno segue "text"
