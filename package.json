@@ -1,0 +1,54 @@
+{
+  "name": "n8n-nodes-zap-api",
+  "version": "0.1.2",
+  "description": "n8n community node para a ZAP-API (WhatsApp): enviar mensagens e reagir a eventos.",
+  "keywords": [
+    "n8n-community-node-package",
+    "whatsapp",
+    "zap-api"
+  ],
+  "license": "MIT",
+  "homepage": "https://zap-api.tech",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andersongadelhaadv-cmyk/zap-api-n8n-nod.git"
+  },
+  "bugs": {
+    "url": "https://github.com/andersongadelhaadv-cmyk/zap-api-n8n-nod/issues"
+  },
+  "author": {
+    "name": "ZAP-API"
+  },
+  "scripts": {
+    "build": "tsc && gulp build:icons",
+    "dev": "tsc --watch",
+    "lint": "eslint nodes credentials --ext .ts",
+    "test": "vitest run"
+  },
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/ZapApiApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/ZapApi/ZapApi.node.js",
+      "dist/nodes/ZapApiTrigger/ZapApiTrigger.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@n8n/node-cli": "^0.58.7",
+    "@types/node": "^25.9.1",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint-plugin-n8n-nodes-base": "^1.16.0",
+    "gulp": "^4.0.2",
+    "n8n-workflow": "^1.40.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  }
+}

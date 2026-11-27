@@ -1,0 +1,48 @@
+name: CI e publicação no npm
+
+# Lint, build e testes em todo push/PR. Em push na main, publica no npm
+# QUANDO a versão do package.json for nova, com provenance (exigência do n8n
+# para verificar community nodes desde 01/05/2026). Autenticação: Trusted
+# Publishing (OIDC) configurado na página do pacote no npm — sem token.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    name: lint + build + test (+ publish)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          # Node 24: a árvore do @n8n/node-cli traz isolated-vm (engines >=24, binário pronto).
+          node-version: 24
+          cache: npm
+          registry-url: "https://registry.npmjs.org"
+      - name: Instalar (lockfile)
+        run: npm ci --no-audit --no-fund
+      - name: Lint
+        run: npm run lint
+      - name: Build
+        run: npm run build
+      - name: Testes
+        run: npm test
+      - name: Publicar no npm (se versão nova)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+            echo "$NAME@$VERSION já publicado — nada a fazer."
+            exit 0
+          fi
+          # Trusted Publishing exige npm >= 11.5.1.
+          npm install -g npm@11.6.2
+          echo "Publicando $NAME@$VERSION com provenance..."
+          npm publish --access public --provenance
