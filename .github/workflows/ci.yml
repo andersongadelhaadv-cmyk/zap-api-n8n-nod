@@ -66,4 +66,10 @@ jobs:
       - name: Scan
         run: |
           VERSION=$(node -p "require('./package.json').version")
+          # O npm leva alguns segundos para expor a versão recém-publicada;
+          # sem esta espera o scan falha com "No package metadata found".
+          for i in $(seq 1 30); do
+            if npm view "n8n-nodes-zap-api@$VERSION" version --prefer-online >/dev/null 2>&1; then break; fi
+            sleep 10
+          done
           npx -y @n8n/scan-community-package@beta "n8n-nodes-zap-api@$VERSION"
