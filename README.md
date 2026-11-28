@@ -1,6 +1,6 @@
 # n8n-nodes-zap-api
 
-Community node da [ZAP-API](https://zap-api.tech) (WhatsApp) para o [n8n](https://n8n.io).
+Community node da [ZAP-API](https://zap-api.tech/integracoes/n8n?utm_source=n8n&utm_medium=readme) (WhatsApp) para o [n8n](https://n8n.io).
 
 ## Instalação
 

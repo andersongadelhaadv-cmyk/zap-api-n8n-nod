@@ -51,3 +51,13 @@ describe("lista de instâncias sem credencial (primeira abertura do nó)", () =>
     await expect(getInstances.call(ctx as never)).rejects.toThrow("401");
   });
 });
+
+describe("links do nó levam a uma página pública e medida", () => {
+  it("documentação da credencial não exige login e carrega utm_source=n8n", async () => {
+    const { ZapApiApi } = await import("../../credentials/ZapApiApi.credentials");
+    const url = new ZapApiApi().documentationUrl;
+    expect(url).not.toMatch(/\/dashboard/);
+    expect(url).toMatch(/^https:\/\/zap-api\.tech\/integracoes\/n8n\?/);
+    expect(new URL(url).searchParams.get("utm_source")).toBe("n8n");
+  });
+});
