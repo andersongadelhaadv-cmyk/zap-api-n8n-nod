@@ -13,7 +13,9 @@ export class ZapApiApi implements ICredentialType {
 
   icon: Icon = { light: "file:../nodes/ZapApi/zapapi.svg", dark: "file:../nodes/ZapApi/zapapi.svg" };
 
-  documentationUrl = "https://zap-api.tech/dashboard/docs";
+  // Página pública (a de docs do painel exige login: quem ainda não tem conta
+  // batia numa tela fechada). UTM mede quantos cadastros vêm do nó.
+  documentationUrl = "https://zap-api.tech/integracoes/n8n?utm_source=n8n&utm_medium=node&utm_campaign=credencial";
 
   properties: INodeProperties[] = [
     {
@@ -31,7 +33,7 @@ export class ZapApiApi implements ICredentialType {
       default: "",
       required: true,
       description:
-        "Token da instância (tk_...), em Painel ZAP-API → Instâncias. Cada token vale para UMA instância: é ela que aparece na lista do nó. Para usar outro número, crie outra credencial com o token dele.",
+        "Token da instância (tk_...), em Painel ZAP-API → Instâncias. Cada token vale para UMA instância: é ela que aparece na lista do nó. Para usar outro número, crie outra credencial com o token dele. Ainda não tem conta? <a href=\"https://zap-api.tech/integracoes/n8n?utm_source=n8n&utm_medium=node&utm_campaign=token\">Teste 7 dias grátis</a>.",
     },
   ];
 
