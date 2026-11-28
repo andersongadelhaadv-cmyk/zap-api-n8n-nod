@@ -8,10 +8,24 @@ import type { ILoadOptionsFunctions, INodePropertyOptions } from "n8n-workflow";
  * `value` é o `instanceId` público (inst_...) — é o `:id` que as rotas
  * /instances/:id/* esperam.
  */
+export const AVISO_SEM_CREDENCIAL: INodePropertyOptions = {
+  name: "Select a Credential Above, Then Close and Reopen This Node",
+  value: "",
+};
+
 export async function getInstances(
   this: ILoadOptionsFunctions
 ): Promise<INodePropertyOptions[]> {
-  const creds = await this.getCredentials("zapApiApi");
+  // Ao adicionar o nó, o n8n pede a lista ANTES de pôr a credencial no nó e não
+  // pede de novo quando ela entra (getCredentials lança "Node does not have any
+  // credentials set" e a tela só mostra "Error fetching options"). Em vez do erro
+  // mudo, a lista explica o que fazer.
+  let creds;
+  try {
+    creds = await this.getCredentials("zapApiApi");
+  } catch {
+    return [AVISO_SEM_CREDENCIAL];
+  }
   const res = (await this.helpers.httpRequestWithAuthentication.call(this, "zapApiApi", {
     method: "GET",
     baseURL: creds.baseUrl as string,
